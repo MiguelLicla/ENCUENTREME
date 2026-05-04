@@ -1,0 +1,17 @@
+# Handle line endings automatically
+* text=auto
+
+# Force LF for shell scripts
+*.sh text eol=lf
+
+# Force LF for Dockerfiles
+Dockerfile* text eol=lf
+
+# Denote binary files
+*.dll binary
+*.exe binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary

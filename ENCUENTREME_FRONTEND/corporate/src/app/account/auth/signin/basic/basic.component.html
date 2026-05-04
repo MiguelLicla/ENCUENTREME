@@ -1,0 +1,71 @@
+<div class="enc-auth-wrap">
+  <div class="enc-auth-card enc-fade-up">
+
+    <!-- Brand -->
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md"
+           style="background:linear-gradient(135deg,#00A1B1,#00d2e0);">
+        <i class="ri-radar-line text-white text-3xl"></i>
+      </div>
+      <h1 class="text-[22px] font-bold tracking-tight mb-1" style="color:var(--text);">Bienvenido</h1>
+      <p class="text-[13px]" style="color:var(--text-2);">Gestión de objetos perdidos · Plaza Norte</p>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+
+      <div>
+        <label class="enc-label">Usuario</label>
+        <div class="relative">
+          <i class="ri-user-follow-line absolute left-3 top-1/2 -translate-y-1/2 text-[15px]"
+             style="color:var(--text-3);"></i>
+          <input type="text" formControlName="username"
+                 class="enc-input pl-9"
+                 placeholder="Código de usuario">
+        </div>
+      </div>
+
+      <div>
+        <div class="flex justify-between items-center mb-[5px]">
+          <label class="enc-label mb-0">Contraseña</label>
+          <a routerLink="/auth/pass-reset/basic"
+             class="text-[11px] no-underline" style="color:var(--brand);">
+            ¿Olvidó su contraseña?
+          </a>
+        </div>
+        <div class="relative">
+          <i class="ri-lock-password-line absolute left-3 top-1/2 -translate-y-1/2 text-[15px]"
+             style="color:var(--text-3);"></i>
+          <input [type]="fieldTextType ? 'text' : 'password'" formControlName="password"
+                 class="enc-input pl-9 pr-10"
+                 placeholder="Contraseña">
+          <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2"
+                  style="border:none;background:transparent;color:var(--text-3);cursor:pointer;"
+                  (click)="toggleFieldTextType()">
+            <i class="ri-eye-fill text-[15px]"
+               [ngClass]="fieldTextType ? 'ri-eye-fill' : 'ri-eye-off-fill'"></i>
+          </button>
+        </div>
+      </div>
+
+      <label class="flex items-center gap-2 cursor-pointer mt-1">
+        <input type="checkbox" id="auth-remember-check"
+               class="rounded" style="accent-color:var(--brand);">
+        <span class="text-[12px]" style="color:var(--text-2);">Recordar sesión</span>
+      </label>
+
+      <button type="submit"
+              class="enc-btn enc-btn-primary enc-btn-lg w-full justify-center mt-2">
+        <i class="ri-shield-check-line"></i>
+        Ingresar al Sistema
+      </button>
+
+    </form>
+
+    <!-- Footer -->
+    <p class="text-center text-[11px] mt-6 mb-0" style="color:var(--text-3);">
+      © 2026 Encuéntrame.pe &mdash; Plaza Norte
+    </p>
+
+  </div>
+</div>

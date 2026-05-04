@@ -1,0 +1,151 @@
+<div class="container py-4">
+
+  <!-- Clean Sub-Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
+    <div>
+      <h2 class="h3 fw-bold mb-1 tracking-tight">Reportes de Objetos Perdidos</h2>
+      <p class="text-muted small mb-0">Comunidad Plaza Norte — Actualizado en tiempo real</p>
+    </div>
+    <a routerLink="/publico/registro" class="enc-btn enc-btn-primary shadow-sm px-4">
+      <i class="ri-add-line me-1"></i>Reportar mi Pérdida
+    </a>
+  </div>
+
+  <!-- Filters: Modern Glass Style -->
+  <div class="enc-card p-3 mb-5 bg-white border-0 shadow-sm">
+    <div class="row g-3 align-items-end">
+      <div class="col-12 col-md-6 col-lg-7">
+        <label class="enc-label ms-1">Buscar por descripción o lugar</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-0"><i class="ri-search-line"></i></span>
+          <input type="text" class="form-control border-0 bg-light"
+                 [(ngModel)]="filtroTexto"
+                 (ngModelChange)="aplicarFiltro()"
+                 maxlength="100"
+                 placeholder="Ej: Mochila negra, iPhone 13, Llaves...">
+        </div>
+      </div>
+      <div class="col-12 col-md-3 col-lg-3">
+        <label class="enc-label ms-1">Categoría</label>
+        <select class="form-select border-0 bg-light" [(ngModel)]="filtroTipo" (ngModelChange)="aplicarFiltro()">
+          <option value="">Todas</option>
+          <option *ngFor="let t of tipos" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-3 col-lg-2 text-end">
+        <button class="enc-btn enc-btn-ghost w-100 justify-content-center" (click)="filtroTexto=''; filtroTipo=''; aplicarFiltro()">
+          <i class="ri-refresh-line me-1"></i>Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Stats -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <span class="badge enc-badge-teal py-2 px-3">
+      <i class="ri-check-double-line me-1"></i>
+      {{ publicacionesFiltradas.length }} reportes activos
+    </span>
+    <button class="btn btn-link text-decoration-none text-muted small p-0" (click)="cargar()">
+      <i class="ri-restart-line me-1"></i>Actualizar lista
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <!-- Cards Grid: Modern Clean Layout -->
+  <div class="row g-4" *ngIf="!loading">
+
+    <div class="col-12 col-md-6" *ngFor="let item of publicacionesFiltradas">
+      <div class="enc-card h-100 p-0 overflow-hidden border-0 shadow-sm hover-translate">
+        <div class="p-4">
+          <div class="d-flex align-items-start justify-content-between mb-3">
+            <div class="d-flex align-items-center gap-3 min-width-0">
+              <div class="rounded-3 flex-shrink-0 overflow-hidden shadow-sm"
+                   style="width:52px;height:52px;background:#f5f5f7; border: 1px solid rgba(0,0,0,0.05);">
+                <img [src]="item.dsc_imagen || 'assets/images/no-object.svg'"
+                     style="width:100%;height:100%;object-fit:cover;"
+                     alt="foto">
+              </div>
+              <div class="min-width-0">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <h6 class="fw-bold mb-0 text-truncate" style="font-size:16px;">{{ item.dsc_titulo }}</h6>
+                  <span class="text-muted small">#{{ item.id_publicacion }}</span>
+                </div>
+                <p class="text-muted small mb-0 d-flex align-items-center">
+                  <i class="ri-user-smile-line me-1 text-primary"></i>
+                  {{ item.dsc_nombre }} {{ item.dsc_apellido_paterno }}
+                </p>
+              </div>
+            </div>
+            <span class="enc-badge" 
+                  [ngClass]="item.id_estado === 3 ? 'enc-badge-green' : item.id_estado === 2 ? 'enc-badge-blue' : 'enc-badge-orange'">
+              {{ item.dsc_estado }}
+            </span>
+          </div>
+
+          <p class="text-secondary small mb-3 truncate-2" style="line-height:1.5;">
+            {{ item.dsc_detalle_objeto }}
+          </p>
+
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <span class="enc-badge enc-badge-gray">
+              <i class="ri-map-pin-line me-1"></i>{{ item.dsc_lugar_perdida || 'No especificado' }}
+            </span>
+            <span class="enc-badge enc-badge-gray">
+              <i class="ri-price-tag-3-line me-1"></i>{{ item.dsc_tipo }}
+            </span>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top" style="border-color: rgba(0,0,0,0.05)!important;">
+            <div class="text-muted" style="font-size:11px;">
+              <i class="ri-calendar-line me-1"></i>
+              Perdido el {{ item.fch_perdida | date:'dd/MM/yyyy' }}
+            </div>
+            <a routerLink="/publico/registro" class="enc-btn enc-btn-soft enc-btn-sm">
+              ¿Es tuyo? Reportar
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="col-12" *ngIf="publicacionesFiltradas.length === 0">
+      <div class="enc-card py-5 text-center bg-light border-dashed">
+        <i class="ri-file-search-line fs-1 d-block mb-3 text-muted"></i>
+        <h5 class="fw-bold">No encontramos coincidencias</h5>
+        <p class="text-muted small mb-4 px-4">Intenta ajustar los filtros o registra tu pérdida para que podamos ayudarte.</p>
+        <a routerLink="/publico/registro" class="enc-btn enc-btn-primary">
+          <i class="ri-add-line me-1"></i>Crear nuevo reporte
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Info Box: Minimalist -->
+  <div class="mt-5 p-4 rounded-4" style="background: rgba(0,161,177,0.04); border: 1px solid rgba(0,161,177,0.1);">
+    <div class="row align-items-center g-3">
+      <div class="col-md-auto">
+        <div class="rounded-circle bg-white shadow-sm d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+          <i class="ri-information-line text-primary fs-4"></i>
+        </div>
+      </div>
+      <div class="col">
+        <h6 class="fw-bold mb-1 text-dark">¿Cómo recuperar un objeto?</h6>
+        <p class="text-muted small mb-0">
+          Si identificas tu pertenencia, dirígete al módulo de Seguridad en el Nivel 1. 
+          El personal validará tu identidad y coordinará la entrega. 
+          <strong>Es un servicio gratuito de Plaza Norte.</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>

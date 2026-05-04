@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Encuentreme.API/Encuentreme.API.csproj" />
+  <Project Path="Encuentreme.Data/Encuentreme.Data.csproj" />
+  <Project Path="Encuentreme.Entities/Encuentreme.Entities.csproj" />
+  <Project Path="Encuentreme.Framework/Encuentreme.Framework.csproj" />
+  <Project Path="Encuentreme.Logic/Encuentreme.Logic.csproj" />
+</Solution>

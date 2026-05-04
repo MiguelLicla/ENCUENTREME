@@ -1,0 +1,349 @@
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1">Reclamaciones</h4>
+    <p class="text-muted small mb-0">
+      <strong class="text-dark">{{ publicacionesFiltradas.length }}</strong> de
+      {{ publicaciones.length }} solicitudes
+    </p>
+  </div>
+  <button class="btn btn-sm btn-outline-secondary" (click)="cargar()">
+    <i class="ri-refresh-line me-1"></i>Actualizar
+  </button>
+</div>
+
+<!-- Filters -->
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-12 col-md-7">
+        <div class="input-group">
+          <span class="input-group-text"><i class="ri-search-line"></i></span>
+          <input type="text" class="form-control"
+                 [(ngModel)]="filtroTexto"
+                 (ngModelChange)="aplicarFiltro()"
+                 placeholder="Buscar por objeto, nombre...">
+        </div>
+      </div>
+      <div class="col-8 col-md-3">
+        <select class="form-select"
+                [(ngModel)]="filtroEstado"
+                (ngModelChange)="aplicarFiltro()">
+          <option value="">Cualquier estado</option>
+          <option *ngFor="let e of estados" [value]="e">{{ e }}</option>
+        </select>
+      </div>
+      <div class="col-4 col-md-2">
+        <button class="btn btn-outline-secondary w-100"
+                (click)="filtroTexto=''; filtroEstado=''; aplicarFiltro()">
+          <i class="ri-refresh-line me-1"></i>Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="text-center py-5" *ngIf="loading">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+</div>
+
+<!-- Cards Grid -->
+<div class="row g-3" *ngIf="!loading">
+
+  <div class="col-lg-6" *ngFor="let item of publicacionesFiltradas">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+
+        <div class="d-flex align-items-start justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-3 flex-grow-1 min-width-0">
+            <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                 style="width:46px;height:46px;background:#e6f7f9;">
+              <i class="ri-box-3-line fs-4" style="color:#00A1B1;"></i>
+            </div>
+            <div class="min-width-0">
+              <h6 class="fw-bold mb-1 text-truncate">{{ item.dsc_titulo }}</h6>
+              <p class="text-muted small mb-0">
+                <i class="ri-user-line me-1"></i>{{ item.dsc_nombre }} {{ item.dsc_apellido_paterno }}
+              </p>
+            </div>
+          </div>
+          <span class="badge ms-2 flex-shrink-0" [ngClass]="badgeClass(item.id_estado)">
+            {{ item.dsc_estado }}
+          </span>
+        </div>
+
+        <div class="d-flex flex-wrap gap-3 mb-3" style="font-size:12px;">
+          <span class="text-muted">
+            <i class="ri-calendar-event-line me-1"></i>{{ item.fch_perdida | date:'dd/MM/yyyy' }}
+          </span>
+          <span class="text-muted" *ngIf="item.dsc_lugar_perdida">
+            <i class="ri-map-pin-line me-1"></i>{{ item.dsc_lugar_perdida }}
+          </span>
+          <span class="text-muted" *ngIf="item.dsc_tipo">
+            <i class="ri-price-tag-3-line me-1"></i>{{ item.dsc_tipo }}
+          </span>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+          <div style="font-size:12px;">
+            <span class="text-muted me-3" *ngIf="item.num_telefono">
+              <i class="ri-phone-line me-1"></i>{{ item.num_telefono }}
+            </span>
+            <small class="text-muted">
+              <i class="ri-calendar-check-line me-1"></i>{{ item.fch_registro | date:'dd/MM/yyyy' }}
+            </small>
+          </div>
+          <button class="btn btn-sm btn-primary" (click)="gestionar(item)">
+            <i class="ri-settings-3-line me-1"></i>Gestionar
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div class="col-12" *ngIf="publicacionesFiltradas.length === 0">
+    <div class="card shadow-sm">
+      <div class="card-body py-5 text-center text-muted">
+        <i class="ri-file-search-line fs-1 d-block mb-3"></i>
+        <h5 class="fw-semibold">Sin resultados</h5>
+        <p class="mb-0 small">Ajusta los filtros para ver más reclamaciones.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ─── MODAL: Gestionar Reclamación ─── -->
+<div *ngIf="modalVisible" class="modal d-block" style="z-index:1055;background:rgba(0,0,0,.45);">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <h5 class="modal-title fw-bold mb-0">
+            <i class="ri-settings-3-line me-2 text-primary"></i>Gestionar Reclamación
+          </h5>
+          <p class="text-muted small mb-0 mt-1" *ngIf="itemSeleccionado">
+            {{ itemSeleccionado.dsc_titulo }}
+            &mdash; {{ itemSeleccionado.dsc_nombre }} {{ itemSeleccionado.dsc_apellido_paterno }}
+          </p>
+        </div>
+        <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body" *ngIf="itemSeleccionado">
+        <div class="row g-4">
+
+          <!-- Left: Reporte detail -->
+          <div class="col-lg-5">
+            <div class="card border h-100">
+              <div class="card-header bg-light py-2 px-3">
+                <span class="fw-bold small">
+                  <i class="ri-file-list-3-line me-1 text-primary"></i>Datos del Reporte
+                </span>
+              </div>
+              <div class="card-body px-3 py-3">
+
+                <!-- Foto del objeto -->
+                <div class="rounded-3 overflow-hidden mb-3" style="height:130px;background:#e6f7f9;">
+                  <img [src]="itemSeleccionado.dsc_imagen || 'assets/images/no-object.svg'"
+                       class="w-100 h-100" style="object-fit:cover;" alt="">
+                </div>
+
+                <dl class="mb-0" style="font-size:13px;">
+
+                  <dt class="text-muted fw-normal small mb-0">Objeto perdido</dt>
+                  <dd class="fw-semibold mb-3">{{ itemSeleccionado.dsc_titulo }}</dd>
+
+                  <ng-container *ngIf="itemSeleccionado.dsc_detalle_objeto">
+                    <dt class="text-muted fw-normal small mb-0">Descripción</dt>
+                    <dd class="mb-3">{{ itemSeleccionado.dsc_detalle_objeto }}</dd>
+                  </ng-container>
+
+                  <div class="row g-3 mb-3">
+                    <div class="col-6">
+                      <dt class="text-muted fw-normal small mb-0">Categoría</dt>
+                      <dd class="mb-0">
+                        <span class="badge bg-light text-dark border">{{ itemSeleccionado.dsc_tipo }}</span>
+                      </dd>
+                    </div>
+                    <div class="col-6">
+                      <dt class="text-muted fw-normal small mb-0">Estado</dt>
+                      <dd class="mb-0">
+                        <span class="badge" [ngClass]="badgeClass(itemSeleccionado.id_estado)">
+                          {{ itemSeleccionado.dsc_estado }}
+                        </span>
+                      </dd>
+                    </div>
+                    <div class="col-6">
+                      <dt class="text-muted fw-normal small mb-0">Fecha pérdida</dt>
+                      <dd class="mb-0">{{ itemSeleccionado.fch_perdida | date:'dd/MM/yyyy' }}</dd>
+                    </div>
+                    <div class="col-6" *ngIf="itemSeleccionado.dsc_lugar_perdida">
+                      <dt class="text-muted fw-normal small mb-0">Lugar</dt>
+                      <dd class="mb-0">{{ itemSeleccionado.dsc_lugar_perdida }}</dd>
+                    </div>
+                  </div>
+
+                  <hr class="my-2">
+
+                  <dt class="text-muted fw-normal small mb-0">Propietario</dt>
+                  <dd class="fw-semibold mb-3">
+                    {{ itemSeleccionado.dsc_nombre }} {{ itemSeleccionado.dsc_apellido_paterno }}
+                  </dd>
+
+                  <div class="row g-2">
+                    <div class="col-6" *ngIf="itemSeleccionado.num_documento">
+                      <dt class="text-muted fw-normal small mb-0">Documento</dt>
+                      <dd class="mb-0 fw-semibold">{{ itemSeleccionado.num_documento }}</dd>
+                    </div>
+                    <div class="col-6" *ngIf="itemSeleccionado.num_telefono">
+                      <dt class="text-muted fw-normal small mb-0">Teléfono</dt>
+                      <dd class="mb-0">
+                        <a [href]="'tel:' + itemSeleccionado.num_telefono"
+                           class="text-decoration-none text-primary fw-semibold">
+                          <i class="ri-phone-line me-1"></i>{{ itemSeleccionado.num_telefono }}
+                        </a>
+                      </dd>
+                    </div>
+                    <div class="col-12" *ngIf="itemSeleccionado.dsc_correo">
+                      <dt class="text-muted fw-normal small mb-0">Correo</dt>
+                      <dd class="mb-0">
+                        <a [href]="'mailto:' + itemSeleccionado.dsc_correo"
+                           class="text-decoration-none text-primary">
+                          {{ itemSeleccionado.dsc_correo }}
+                        </a>
+                      </dd>
+                    </div>
+                  </div>
+
+                </dl>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Create Entrega -->
+          <div class="col-lg-7">
+            <div class="card border">
+              <div class="card-header bg-light py-2 px-3">
+                <span class="fw-bold small">
+                  <i class="ri-exchange-line me-1 text-success"></i>Registrar Entrega
+                </span>
+              </div>
+              <div class="card-body px-3 py-3">
+
+                <!-- Step 1: Select objeto -->
+                <p class="fw-semibold small mb-2">
+                  <span class="badge bg-primary rounded-pill me-1">1</span>
+                  Seleccionar objeto encontrado en custodia
+                </p>
+
+                <div class="text-center py-3" *ngIf="cargandoObjetos">
+                  <div class="spinner-border spinner-border-sm text-primary"></div>
+                </div>
+
+                <div *ngIf="!cargandoObjetos && objetos.length === 0"
+                     class="alert alert-warning py-2 px-3 small mb-3">
+                  <i class="ri-information-line me-1"></i>
+                  No hay objetos disponibles en custodia. Registre primero el objeto hallado en
+                  <a routerLink="/objetos/listado" (click)="cerrarModal()" class="alert-link">
+                    Inventario de Hallazgos
+                  </a>.
+                </div>
+
+                <div class="row g-2 mb-4" *ngIf="!cargandoObjetos && objetos.length > 0">
+                  <div class="col-12 col-md-6" *ngFor="let obj of objetos">
+                    <div class="card h-100 border"
+                         [class.border-primary]="objetoSeleccionado?.id_objeto === obj.id_objeto"
+                         [style.background]="objetoSeleccionado?.id_objeto === obj.id_objeto ? '#f0fbfc' : ''"
+                         style="cursor:pointer;"
+                         (click)="seleccionarObjeto(obj)">
+                      <div class="card-body p-2">
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+                               [style.background]="objetoSeleccionado?.id_objeto === obj.id_objeto ? '#00A1B1' : '#e6f7f9'"
+                               [style.color]="objetoSeleccionado?.id_objeto === obj.id_objeto ? 'white' : '#00A1B1'"
+                               style="width:30px;height:30px;font-size:12px;">
+                            {{ (obj.dsc_objeto || '?').charAt(0) }}
+                          </div>
+                          <div class="flex-grow-1 min-width-0">
+                            <p class="fw-semibold mb-0 text-truncate" style="font-size:12px;">
+                              {{ obj.dsc_objeto }}
+                            </p>
+                            <p class="text-muted mb-0" style="font-size:11px;">
+                              {{ obj.dsc_color }}<span *ngIf="obj.dsc_color"> &middot; </span>#ENC-{{ obj.id_objeto }}
+                            </p>
+                          </div>
+                          <i *ngIf="objetoSeleccionado?.id_objeto === obj.id_objeto"
+                             class="ri-checkbox-circle-fill text-primary flex-shrink-0"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step 2: Receptor -->
+                <p class="fw-semibold small mb-2">
+                  <span class="badge bg-primary rounded-pill me-1">2</span>
+                  Datos del receptor (quien retira el objeto)
+                </p>
+
+                <div class="row g-3">
+                  <div class="col-6">
+                    <label class="form-label fw-medium small mb-1">Nombre</label>
+                    <input type="text" class="form-control form-control-sm"
+                           [(ngModel)]="entrega.dsc_nombre_receptor"
+                           placeholder="Nombre">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label fw-medium small mb-1">Apellido</label>
+                    <input type="text" class="form-control form-control-sm"
+                           [(ngModel)]="entrega.dsc_apellido_receptor"
+                           placeholder="Apellido">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label fw-medium small mb-1">DNI / CE *</label>
+                    <input type="text" class="form-control form-control-sm"
+                           [(ngModel)]="entrega.num_documento"
+                           placeholder="Nro. Documento">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label fw-medium small mb-1">Teléfono</label>
+                    <input type="text" class="form-control form-control-sm"
+                           [(ngModel)]="entrega.num_telefono_receptor"
+                           placeholder="+51 9...">
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="cerrarModal()">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-success"
+                (click)="crearEntrega()"
+                [disabled]="guardandoEntrega || !objetoSeleccionado">
+          <span *ngIf="guardandoEntrega" class="spinner-border spinner-border-sm me-2"></span>
+          <i *ngIf="!guardandoEntrega" class="ri-check-double-line me-1"></i>
+          {{ guardandoEntrega ? 'Procesando...' : 'Registrar Entrega' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+<div class="d-flex flex-column min-vh-100" style="background:#f5f5f7;">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-md bg-white border-bottom shadow-sm">
+    <div class="container">
+
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" routerLink="/publico/perdidos">
+        <div class="rounded-2 d-flex align-items-center justify-content-center"
+             style="width:32px;height:32px;background:linear-gradient(135deg,#00A1B1,#00d2e0);">
+          <i class="ri-radar-line text-white" style="font-size:15px;"></i>
+        </div>
+        <span style="font-size:15px;color:#1D1D1F;">
+          Encuéntrame<span style="color:#00A1B1;">.pe</span>
+        </span>
+      </a>
+
+      <button class="navbar-toggler border-0" type="button" (click)="mobileOpen = !mobileOpen">
+        <i class="ri-menu-line fs-5"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" [class.show]="mobileOpen">
+        <ul class="navbar-nav mx-auto gap-1">
+          <li class="nav-item">
+            <a class="nav-link rounded-2 px-3 fw-bold text-primary" style="font-size:14px;"
+               routerLink="/publico/registro" routerLinkActive="active" (click)="mobileOpen=false">
+              <i class="ri-edit-2-line me-1"></i>Reportar mi Pérdida
+            </a>
+          </li>
+        </ul>
+        <div class="ms-auto mt-2 mt-md-0">
+          <a routerLink="/auth/signin/basic" class="btn btn-outline-secondary btn-sm" (click)="mobileOpen=false">
+            <i class="ri-lock-line me-1"></i>Personal
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <main class="flex-grow-1">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-3 border-top bg-white" style="font-size:12px;">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+      <span class="text-muted">
+        &copy; {{ year }} <strong style="color:#00A1B1;">Encuéntrame.pe</strong> &middot; Sistema de Objetos Perdidos &mdash; Plaza Norte
+      </span>
+      <span class="text-muted">
+        <i class="ri-shield-check-line me-1 text-success"></i>Registro gratuito &middot; Sin crear cuenta
+      </span>
+    </div>
+  </footer>
+
+</div>

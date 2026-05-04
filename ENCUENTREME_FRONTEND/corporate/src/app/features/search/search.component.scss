@@ -1,0 +1,32 @@
+/* DataView y paginación — sin overrides que rompan el tamaño de inputs */
+:host ::ng-deep {
+  .p-dataview-content {
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+  .p-paginator {
+    background: transparent;
+    border: none;
+    padding: 1rem 0 0 0;
+    .p-paginator-pages .p-paginator-page {
+      border-radius: 8px;
+      min-width: 2.5rem;
+      height: 2.5rem;
+      margin: 0 0.25rem;
+      &.p-highlight {
+        background: #00A1B1;
+        border-color: #00A1B1;
+        color: white;
+      }
+    }
+    .p-paginator-first, .p-paginator-prev,
+    .p-paginator-next, .p-paginator-last {
+      border-radius: 8px;
+      min-width: 2.5rem;
+      height: 2.5rem;
+      color: #6b7280;
+      &:hover { background: #f3f4f6; }
+    }
+  }
+}

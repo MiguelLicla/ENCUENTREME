@@ -1,0 +1,125 @@
+<div class="auth-page-wrapper pt-5">
+  <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
+    <div class="bg-overlay"></div>
+    <div class="shape">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
+        <path d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
+      </svg>
+    </div>
+  </div>
+
+  <div class="auth-page-content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center mt-sm-5 mb-4 text-white-50">
+            <div class="mb-2">
+              <a routerLink="" class="d-flex align-items-center justify-content-center text-decoration-none">
+                <div class="bg-gradient-primary rounded-3 d-flex align-items-center justify-content-center me-2 shadow-sm" style="width: 45px; height: 45px; background: linear-gradient(135deg, #00A1B1 0%, #00d2df 100%) !important;">
+                  <i class="ri-radar-line text-white fs-24"></i>
+                </div>
+                <span class="fw-bold fs-24 text-white" style="letter-spacing: -0.5px;">Encuéntrame<span style="color: #00A1B1;">.pe</span></span>
+              </a>
+            </div>
+            <p class="mt-2 fs-14 fw-medium opacity-75">Sistema de Gestión</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 col-xl-5">
+          <div class="card mt-4">
+            <div class="card-body p-4">
+
+              <div class="text-center mt-2">
+                <div class="avatar-lg mx-auto mb-3">
+                  <div class="avatar-title bg-primary-subtle text-primary rounded-circle fs-24">
+                    <i class="ri-user-add-line"></i>
+                  </div>
+                </div>
+                <h5 class="text-primary">Crear Usuario</h5>
+                <p class="text-muted fs-13">Registra un nuevo usuario del sistema</p>
+              </div>
+
+              <div class="p-2 mt-3">
+                <form [formGroup]="SignupForm" (ngSubmit)="onSubmit()">
+
+                  <div class="mb-3">
+                    <label for="useremail" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="ri-mail-line"></i></span>
+                      <input type="email" class="form-control" id="useremail" placeholder="correo@ejemplo.com"
+                        formControlName="email" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+                      <div class="invalid-feedback">Ingrese un correo válido</div>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Nombre de usuario <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="ri-user-line"></i></span>
+                      <input type="text" class="form-control" id="username" placeholder="Nombre de usuario"
+                        formControlName="name" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }">
+                      <div class="invalid-feedback">Ingrese el nombre de usuario</div>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="userpassword" class="form-label">Contraseña <span class="text-danger">*</span></label>
+                    <div class="input-group auth-pass-inputgroup">
+                      <span class="input-group-text"><i class="ri-lock-line"></i></span>
+                      <input [type]="fieldTextType ? 'text' : 'password'" class="form-control pe-5 password-input"
+                        placeholder="Mínimo 8 caracteres" id="password-input"
+                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                        formControlName="password" [ngClass]="{ 'is-invalid': submitted && f['password'].errors }">
+                      <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                        type="button" (click)="toggleFieldTextType()">
+                        <i class="ri-eye-fill align-middle"></i>
+                      </button>
+                      <div class="invalid-feedback">Ingrese la contraseña</div>
+                    </div>
+                  </div>
+
+                  <div id="password-contain" class="p-3 bg-light mb-3 rounded fs-13">
+                    <p class="fw-medium mb-2">La contraseña debe contener:</p>
+                    <p id="pass-length" class="invalid mb-1"><i class="ri-close-circle-line me-1"></i>Mínimo <b>8 caracteres</b></p>
+                    <p id="pass-lower" class="invalid mb-1"><i class="ri-close-circle-line me-1"></i>Al menos una <b>minúscula</b> (a-z)</p>
+                    <p id="pass-upper" class="invalid mb-1"><i class="ri-close-circle-line me-1"></i>Al menos una <b>mayúscula</b> (A-Z)</p>
+                    <p id="pass-number" class="invalid mb-0"><i class="ri-close-circle-line me-1"></i>Al menos un <b>número</b> (0-9)</p>
+                  </div>
+
+                  <div class="mt-4">
+                    <button class="btn btn-primary w-100" type="submit">
+                      <i class="ri-user-add-line me-2"></i>Registrar Usuario
+                    </button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 text-center">
+            <p class="mb-0 text-muted fs-13">
+              ¿Ya tienes cuenta?
+              <a routerLink="/auth/signin/basic" class="fw-semibold text-primary text-decoration-underline ms-1">Iniciar sesión</a>
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center">
+            <p class="mb-0 text-muted">&copy; 2026 <strong>Encuéntrame.pe - Plaza Norte</strong> &mdash; Desarrollado por <strong>Miguel Licla</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

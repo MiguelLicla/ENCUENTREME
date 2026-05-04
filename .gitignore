@@ -1,0 +1,50 @@
+# ==========================================
+# ENCUENTREME.PE — .gitignore Maestro
+# ==========================================
+
+# --- .NET (Backend) ---
+[Bb]in/
+[Oo]bj/
+out/
+*.user
+*.userosscache
+*.sln.docuser
+.vs/
+.vscode/
+.idea/
+.claude/
+*.swp
+*.pfx
+*.publishsettings
+appsettings.Development.json
+appsettings.Local.json
+
+# --- Angular / Node (Frontend) ---
+node_modules/
+dist/
+.angular/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.editorconfig
+.prettierrc
+.eslintcache
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# --- OS / Miscellaneous ---
+.DS_Store
+Thumbs.db
+desktop.ini
+*.bak
+*.tmp
+*.log
+.env
+.env.*
+!.env.example
+
+# --- Docker ---
+.dockerignore

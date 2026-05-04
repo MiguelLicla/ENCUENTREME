@@ -1,0 +1,147 @@
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1">Panel de Control</h4>
+    <p class="text-muted small mb-0">{{ today | date:'EEEE, d MMMM yyyy' }}</p>
+  </div>
+  <span class="badge bg-success fs-6">
+    <i class="ri-checkbox-circle-line me-1"></i>Sistema activo
+  </span>
+</div>
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm text-center h-100">
+      <div class="card-body py-4">
+        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+             style="width:48px;height:48px;background:#e6f7f9;">
+          <i class="ri-briefcase-line fs-4" style="color:#00A1B1;"></i>
+        </div>
+        <h3 class="fw-bold mb-1">{{ stats.total_objetos ?? 0 }}</h3>
+        <p class="text-muted small mb-0">Objetos Hallados</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm text-center h-100">
+      <div class="card-body py-4">
+        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+             style="width:48px;height:48px;background:#e8f0fe;">
+          <i class="ri-questionnaire-line fs-4 text-primary"></i>
+        </div>
+        <h3 class="fw-bold mb-1">{{ stats.total_publicaciones ?? 0 }}</h3>
+        <p class="text-muted small mb-0">Reclamaciones</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm text-center h-100">
+      <div class="card-body py-4">
+        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+             style="width:48px;height:48px;background:#e6f9ed;">
+          <i class="ri-checkbox-circle-line fs-4 text-success"></i>
+        </div>
+        <h3 class="fw-bold mb-1">{{ stats.total_entregas ?? 0 }}</h3>
+        <p class="text-muted small mb-0">Entregas</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm text-center h-100">
+      <div class="card-body py-4">
+        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+             style="width:48px;height:48px;background:#fff3e0;">
+          <i class="ri-heart-3-line fs-4 text-warning"></i>
+        </div>
+        <h3 class="fw-bold mb-1">{{ stats.total_donaciones ?? 0 }}</h3>
+        <p class="text-muted small mb-0">Donaciones</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h6 class="fw-bold mb-0">Tendencia de Recuperación</h6>
+            <p class="text-muted small mb-0">Hallazgos vs. entregas exitosas</p>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-primary">Semanal</button>
+            <button class="btn btn-sm btn-outline-secondary">Mensual</button>
+          </div>
+        </div>
+        <apx-chart *ngIf="lineChart"
+          [series]="lineChart.series" [chart]="lineChart.chart"
+          [xaxis]="lineChart.xaxis" [stroke]="lineChart.stroke"
+          [colors]="lineChart.colors">
+        </apx-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h6 class="fw-bold mb-1">Top Categorías</h6>
+        <p class="text-muted small mb-3">Distribución por tipo de objeto</p>
+        <apx-chart *ngIf="pieChart"
+          [series]="pieChart.series" [chart]="pieChart.chart"
+          [labels]="pieChart.labels" [colors]="pieChart.colors">
+        </apx-chart>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Summary Row -->
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3">Estado de Objetos</h6>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span><i class="ri-safe-2-line me-2 text-primary"></i>Extraviados</span>
+            <span class="badge bg-primary rounded-pill">{{ stats.objetos_extraviados ?? 0 }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span><i class="ri-checkbox-circle-line me-2 text-success"></i>Reclamados</span>
+            <span class="badge bg-success rounded-pill">{{ stats.objetos_reclamados ?? 0 }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span><i class="ri-heart-3-line me-2 text-warning"></i>Donados</span>
+            <span class="badge bg-warning text-dark rounded-pill">{{ stats.objetos_donados ?? 0 }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3">Estado de Publicaciones</h6>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span><i class="ri-time-line me-2 text-warning"></i>Pendientes</span>
+            <span class="badge bg-warning text-dark rounded-pill">{{ stats.publicaciones_pendientes ?? 0 }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span><i class="ri-links-line me-2 text-success"></i>Con Coincidencia</span>
+            <span class="badge bg-success rounded-pill">{{ stats.publicaciones_con_coincidencia ?? 0 }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span><i class="ri-truck-line me-2 text-info"></i>Entregas Realizadas</span>
+            <span class="badge bg-info rounded-pill">{{ stats.entregas_realizadas ?? 0 }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

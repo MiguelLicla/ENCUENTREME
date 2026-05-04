@@ -1,0 +1,110 @@
+<header id="page-topbar">
+  <div class="layout-width">
+    <div class="navbar-header">
+
+      <!-- Left: Brand + Menu toggle -->
+      <div class="flex items-center gap-3">
+        <a routerLink="/dashboard" class="flex items-center gap-2 no-underline">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+               style="background:linear-gradient(135deg,#00A1B1,#00d2e0);">
+            <i class="ri-radar-line text-white text-sm"></i>
+          </div>
+          <span class="hidden sm:block text-[15px] font-semibold tracking-tight" style="color:var(--text);">
+            Encuéntrame<span style="color:var(--brand);">.pe</span>
+          </span>
+        </a>
+
+        <button class="topbar-icon-btn" (click)="toggleMobileMenu($event)" aria-label="Menú">
+          <i class="ri-menu-line text-[18px]"></i>
+        </button>
+
+        <span class="hidden lg:flex items-center gap-2 enc-badge enc-badge-green text-[11px]">
+          <span class="w-[6px] h-[6px] rounded-full" style="background:var(--success);"></span>
+          Sistema activo
+        </span>
+      </div>
+
+      <!-- Right: Actions -->
+      <div class="flex items-center gap-1">
+
+        <!-- Fullscreen (desktop) -->
+        <button class="topbar-icon-btn hidden sm:flex" (click)="fullscreen()" title="Pantalla completa">
+          <i class="bx bx-fullscreen text-[18px]"></i>
+        </button>
+
+        <!-- Dark/Light -->
+        <button class="topbar-icon-btn hidden sm:flex" (click)="toggleDarkMode()"
+                [title]="isDarkMode ? 'Modo claro' : 'Modo oscuro'">
+          <i class="bx text-[18px]" [ngClass]="isDarkMode ? 'bx-sun' : 'bx-moon'"></i>
+        </button>
+
+        <div class="w-px h-6 mx-1 hidden sm:block" style="background:var(--border);"></div>
+
+        <!-- User dropdown -->
+        <div ngbDropdown placement="bottom-end">
+          <button type="button" class="flex items-center gap-2 rounded-xl px-2 py-1.5 transition-all hover:bg-gray-100"
+                  ngbDropdownToggle style="border:none;background:transparent;cursor:pointer;">
+            <span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-[13px] font-bold shrink-0"
+                  style="background:linear-gradient(135deg,#405189,#0ab39c);">
+              {{ (usuario?.nombre || 'U').charAt(0).toUpperCase() }}
+            </span>
+            <span class="hidden xl:block text-left">
+              <span class="block text-[13px] font-semibold leading-tight" style="color:var(--text);">
+                {{ usuario?.nombre || 'Usuario' }}
+              </span>
+              <span class="block text-[11px]" style="color:var(--text-2);">
+                {{ usuario?.rol || 'Sistema' }}
+              </span>
+            </span>
+            <i class="ri-arrow-down-s-line text-[14px] hidden xl:block" style="color:var(--text-2);"></i>
+          </button>
+
+          <div ngbDropdownMenu class="mt-2 rounded-xl border shadow-lg overflow-hidden"
+               style="min-width:220px;border-color:var(--border);box-shadow:var(--shadow-lg);">
+            <!-- Header -->
+            <div class="p-4" style="background:linear-gradient(135deg,#405189,#0ab39c);">
+              <div class="flex items-center gap-3">
+                <span class="w-10 h-10 rounded-full flex items-center justify-center text-white text-[15px] font-bold"
+                      style="background:rgba(255,255,255,0.2);">
+                  {{ (usuario?.nombre || 'U').charAt(0).toUpperCase() }}
+                </span>
+                <div>
+                  <p class="text-white font-semibold text-[13px] mb-0">{{ usuario?.nombre || 'Usuario' }}</p>
+                  <p class="text-[11px] mb-0" style="color:rgba(255,255,255,0.65);">{{ usuario?.rol || 'Sistema' }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-1">
+              <a class="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] no-underline transition-colors hover:bg-gray-50"
+                 style="color:var(--text);" href="javascript:void(0);">
+                <i class="ri-user-line text-[15px]" style="color:var(--text-2);"></i> Mi Perfil
+              </a>
+              <a class="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] no-underline transition-colors hover:bg-gray-50"
+                 style="color:var(--text);" href="javascript:void(0);">
+                <i class="ri-settings-3-line text-[15px]" style="color:var(--text-2);"></i> Configuración
+              </a>
+              <hr class="my-1" style="border-color:var(--border);">
+              <a class="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] no-underline transition-colors hover:bg-red-50"
+                 style="color:var(--danger);" href="javascript:void(0);" (click)="logout()">
+                <i class="ri-logout-box-r-line text-[15px]"></i> Cerrar Sesión
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+.topbar-icon-btn {
+  width: 36px; height: 36px;
+  border-radius: 8px; border: none; background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-2); cursor: pointer; transition: all 0.18s;
+  flex-shrink: 0;
+}
+.topbar-icon-btn:hover { background: var(--bg); color: var(--text); }
+</style>

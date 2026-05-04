@@ -1,0 +1,50 @@
+/* Validación inline — tooltip flotante que no desplaza el layout */
+.invalid-tooltip {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* Asegurar que el tooltip se posicione respecto al wrapper */
+.position-relative .invalid-tooltip {
+  top: auto;
+  bottom: calc(100% + 4px);
+  left: 0;
+  right: auto;
+}
+
+/* Fix para p-calendar: evitar que el botón del icono salte a la siguiente línea */
+::ng-deep .p-calendar-inline-custom {
+  display: flex !important;
+  flex-direction: row;
+  
+  .p-inputtext {
+    flex: 1 1 auto;
+    width: 1%; /* Permite que el flex-grow funcione correctamente */
+    height: 40px !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    padding: 0 6px !important; /* Relleno mínimo para maximizar espacio */
+    font-size: 11.5px !important; /* Fuente reducida para que quepan todos los números */
+  }
+
+  .p-datepicker-trigger {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    background-color: #00A1B1 !important;
+    border-color: #00A1B1 !important;
+    color: white !important;
+    width: 34px !important; /* Ancho reducido de 40px a 34px */
+    padding: 0 !important;
+    height: 40px !important; 
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    span { /* El icono dentro del botón */
+      font-size: 15px !important;
+    }
+  }
+}
+
+

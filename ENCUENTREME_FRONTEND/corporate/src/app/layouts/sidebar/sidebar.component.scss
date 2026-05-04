@@ -1,0 +1,68 @@
+// Solo estilos propios — no se toca ninguna clase de Encuéntrame.pe
+
+.scw-logo-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  vertical-align: middle;
+}
+
+.scw-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #405189 0%, #0ab39c 100%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(64, 81, 137, 0.35);
+
+  &--light {
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.scw-brand {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+
+  small {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    opacity: 0.6;
+    margin-left: 2px;
+  }
+}
+
+// Pie del sidebar
+.scw-sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: inherit;
+}
+
+.scw-footer-line {
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, #405189, #0ab39c);
+}
+
+.scw-footer-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 16px;
+}
+
+.scw-footer-credit {
+  font-size: 11px;
+  color: var(--vz-secondary-color, #878a99);
+  i { margin-right: 3px; }
+  strong { font-weight: 600; }
+}

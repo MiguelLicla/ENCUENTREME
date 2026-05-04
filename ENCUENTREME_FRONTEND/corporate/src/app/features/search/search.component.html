@@ -1,0 +1,143 @@
+<div class="min-h-screen" style="background:var(--bg);">
+
+  <!-- Hero Section -->
+  <div class="bg-white border-b py-8 px-4" style="border-color:var(--border);">
+    <div class="max-w-5xl mx-auto">
+      <h1 class="text-[26px] font-bold tracking-tight mb-2" style="color:var(--text);">
+        Buscador de Objetos
+      </h1>
+      <p class="text-[14px] text-muted mb-5">Consulta en tiempo real la base de datos de Plaza Norte</p>
+      
+      <!-- Search input -->
+      <div class="flex gap-2 max-w-2xl shadow-sm rounded-xl overflow-hidden">
+        <div class="relative flex-1">
+          <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-[18px] text-muted"></i>
+          <input type="text" class="enc-input pl-11 h-12 text-[15px] border-0"
+                 placeholder="Ej: Laptop Lenovo, Mochila negra..."
+                 [value]="searchTerm()" (input)="onSearchChange($event)">
+        </div>
+        <button pButton label="Buscar" class="enc-btn enc-btn-primary h-12 px-6 rounded-none border-0"
+                style="border-radius:0!important;">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main: Filters + Results -->
+  <div class="max-w-5xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+      <!-- Filters sidebar -->
+      <div class="lg:col-span-1">
+        <div class="enc-card p-4 border-0 shadow-sm sticky top-[80px]">
+          <h3 class="text-[11px] font-bold uppercase tracking-widest mb-4 text-muted">
+             Filtros Avanzados
+          </h3>
+          <div class="flex flex-col gap-4">
+            <div>
+              <label class="enc-label ms-1">Categoría</label>
+              <p-dropdown [options]="categorias" [(ngModel)]="selectedCategoria"
+                          optionLabel="label" optionValue="value"
+                          placeholder="Todas" styleClass="w-full border-0 bg-light"></p-dropdown>
+            </div>
+            <div>
+              <label class="enc-label ms-1">Estado</label>
+              <p-dropdown [options]="estados" [(ngModel)]="selectedEstado"
+                          optionLabel="label" optionValue="value"
+                          placeholder="Cualquiera" styleClass="w-full border-0 bg-light"></p-dropdown>
+            </div>
+            <div class="pt-2 flex flex-col gap-2">
+              <button class="enc-btn enc-btn-primary w-full justify-center" (click)="applyFilters()">
+                Aplicar
+              </button>
+              <button class="enc-btn enc-btn-ghost w-full justify-center" (click)="resetFilters()">
+                Reiniciar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results feed -->
+      <div class="lg:col-span-3">
+
+        <!-- Results Counter -->
+        <div class="mb-4 d-flex justify-content-between align-items-center" *ngIf="query.isSuccess()">
+           <span class="text-[13px] text-muted">
+             Mostrando <strong>{{ filteredResults().length }}</strong> coincidencias
+           </span>
+        </div>
+
+        <!-- Loading skeletons -->
+        <div *ngIf="query.isPending()" class="flex flex-col gap-4">
+          <div *ngFor="let s of [1,2,3]" class="enc-card p-4 border-0 flex gap-4 animate-pulse">
+            <div class="w-24 h-24 rounded-xl shrink-0 bg-light"></div>
+            <div class="flex-1 flex flex-col gap-3">
+              <div class="h-4 bg-light rounded w-3/4"></div>
+              <div class="h-3 bg-light rounded w-1/2"></div>
+              <div class="h-3 bg-light rounded w-full"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div *ngIf="query.isSuccess()" class="flex flex-col gap-4">
+          
+          <ng-container *ngFor="let item of filteredResults(); let i = index">
+            <div class="enc-card flex flex-col sm:flex-row overflow-hidden border-0 shadow-sm group enc-fade-up hover-translate"
+                 style="animation-delay: {{ i * 0.04 }}s">
+              <!-- Image -->
+              <div class="w-full sm:w-40 h-44 sm:h-auto shrink-0 relative overflow-hidden"
+                   style="background:#f5f5f7;">
+                <img [src]="renderImage(item.dsc_imagen)"
+                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                     onerror="this.src='assets/images/no-image.png'" alt="">
+                <div class="absolute top-3 left-3">
+                  <span class="enc-badge enc-badge-blue shadow-sm">{{ item.categoria }}</span>
+                </div>
+              </div>
+              <!-- Info -->
+              <div class="flex-1 p-4 d-flex flex-column">
+                <div class="mb-auto">
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <h2 class="text-[17px] font-bold m-0 tracking-tight">{{ item.titulo }}</h2>
+                    <span class="text-muted small font-monospace">#{{ item.id }}</span>
+                  </div>
+                  <div class="d-flex flex-wrap gap-3 text-[12px] text-muted mb-3">
+                    <span><i class="ri-map-pin-line text-primary me-1"></i>{{ item.lugar }}</span>
+                    <span><i class="ri-calendar-line text-primary me-1"></i>{{ item.fecha | date:'dd MMM' }}</span>
+                  </div>
+                  <p class="text-muted small truncate-2 mb-0" style="line-height:1.4;">{{ item.dsc_detalle_objeto }}</p>
+                </div>
+                
+                <div class="d-flex align-items-center justify-content-between pt-3 mt-3 border-t" style="border-color: rgba(0,0,0,0.05)!important;">
+                  <span class="enc-badge" [ngClass]="getSeverity(item.estado) === 'success' ? 'enc-badge-green' : 'enc-badge-orange'">
+                    {{ item.estado }}
+                  </span>
+                  <button class="enc-btn enc-btn-soft enc-btn-sm px-4">Ver Detalle</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- In-feed Ad -->
+            <div *ngIf="(i + 1) % 3 === 0" class="my-2">
+              <app-ad-zone slot="1122334455" format="fluid" size="in-feed"></app-ad-zone>
+            </div>
+          </ng-container>
+
+          <!-- Empty state -->
+          <div *ngIf="filteredResults().length === 0" class="enc-card p-16 text-center border-0 bg-light border-dashed">
+            <i class="ri-search-2-line text-[42px] block mb-3 text-muted opacity-50"></i>
+            <h3 class="text-[17px] font-bold mb-2">Sin resultados</h3>
+            <p class="text-muted small mb-4">No encontramos nada que coincida con "{{ searchTerm() }}".</p>
+            <a routerLink="/publico/registro" class="enc-btn enc-btn-primary px-5">
+              Registrar mi pérdida
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,25 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" style="height: 70px;">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" routerLink="/">Encuéntrame<span class="text-primary">.pe</span></a>
+        
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
+                <li class="nav-item"><a class="nav-link fw-semibold" routerLink="/dashboard">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link fw-semibold" routerLink="/publicaciones/listado">Reclamaciones</a></li>
+                <li class="nav-item"><a class="nav-link fw-semibold" routerLink="/objetos/listado">Inventario</a></li>
+            </ul>
+            
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-icon btn-topbar rounded-circle shadow-none"><i class="ri-notification-3-line fs-22"></i></button>
+                <div class="dropdown" ngbDropdown>
+                    <button class="btn shadow-none" ngbDropdownToggle>
+                        <i class="ri-user-circle-line fs-24 align-middle"></i>
+                    </button>
+                    <div ngbDropdownMenu class="dropdown-menu-end">
+                        <a ngbDropdownItem href="javascript:void(0);" routerLink="/auth/signin/basic">Cerrar Sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

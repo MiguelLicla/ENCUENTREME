@@ -1,0 +1,101 @@
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1">Historial de Entregas</h4>
+    <p class="text-muted small mb-0">Registro de objetos devueltos a sus propietarios</p>
+  </div>
+  <button class="btn btn-outline-secondary btn-sm">
+    <i class="ri-printer-line me-1"></i><span class="d-none d-sm-inline">Imprimir</span>
+  </button>
+</div>
+
+<!-- Filters -->
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-12 col-md-6">
+        <div class="input-group">
+          <span class="input-group-text"><i class="ri-search-line"></i></span>
+          <input type="text" class="form-control" placeholder="Buscar por receptor, objeto o DNI...">
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <select class="form-select">
+          <option value="">Todos los estados</option>
+          <option>Programada</option>
+          <option>Entregada</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-3">
+        <input type="date" class="form-control">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered table-sm align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Referencia</th>
+            <th>Receptor</th>
+            <th class="d-none d-md-table-cell">Objeto</th>
+            <th class="d-none d-sm-table-cell">Fecha Entrega</th>
+            <th class="d-none d-lg-table-cell">Atendido por</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of entregas">
+            <td>
+              <span class="fw-semibold text-primary">#ENT-{{ item.id_entrega }}</span>
+            </td>
+            <td>
+              <p class="fw-semibold mb-0 small">{{ item.dsc_nombre }} {{ item.dsc_apellido_paterno }}</p>
+              <p class="text-muted mb-0" style="font-size:11px;">DNI: {{ item.num_documento }}</p>
+            </td>
+            <td class="d-none d-md-table-cell">
+              <small class="text-muted">{{ item.dsc_objeto }}</small>
+            </td>
+            <td class="d-none d-sm-table-cell">
+              <small class="text-muted">{{ item.fch_entrega_real | date:'dd/MM/yyyy' }}</small>
+            </td>
+            <td class="d-none d-lg-table-cell">
+              <small class="text-muted">{{ item.dsc_trabajador }}</small>
+            </td>
+            <td>
+              <span class="badge"
+                    [ngClass]="item.id_estado === 2 ? 'bg-success' : 'bg-warning text-dark'">
+                {{ item.dsc_estado }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary">
+                <i class="ri-eye-line"></i>
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="entregas.length === 0 && !loading">
+            <td colspan="7" class="py-5 text-center text-muted">
+              <i class="ri-history-line fs-1 d-block mb-2"></i>
+              <h6 class="fw-semibold">Sin entregas aún</h6>
+              <p class="small mb-0">Los casos resueltos aparecerán aquí.</p>
+            </td>
+          </tr>
+          <tr *ngIf="loading">
+            <td colspan="7" class="py-4 text-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

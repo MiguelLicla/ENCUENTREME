@@ -1,0 +1,99 @@
+<div class="auth-page-wrapper pt-5">
+  <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
+    <div class="bg-overlay"></div>
+    <div class="shape">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
+        <path d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
+      </svg>
+    </div>
+  </div>
+
+  <div class="auth-page-content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center mt-sm-5 mb-4 text-white-50">
+            <div class="mb-2">
+              <a routerLink="" class="d-flex align-items-center justify-content-center text-decoration-none">
+                <div class="bg-gradient-primary rounded-3 d-flex align-items-center justify-content-center me-2 shadow-sm" style="width: 45px; height: 45px; background: linear-gradient(135deg, #00A1B1 0%, #00d2df 100%) !important;">
+                  <i class="ri-radar-line text-white fs-24"></i>
+                </div>
+                <span class="fw-bold fs-24 text-white" style="letter-spacing: -0.5px;">Encuéntrame<span style="color: #00A1B1;">.pe</span></span>
+              </a>
+            </div>
+            <p class="mt-2 fs-14 fw-medium opacity-75">Sistema de Gestión</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 col-xl-5">
+          <div class="card mt-4">
+            <div class="card-body p-4">
+
+              <div class="text-center mt-2">
+                <div class="avatar-lg mx-auto mb-3">
+                  <div class="avatar-title bg-warning-subtle text-warning rounded-circle fs-24">
+                    <i class="ri-lock-unlock-line"></i>
+                  </div>
+                </div>
+                <h5 class="text-primary">Recuperar Contraseña</h5>
+                <p class="text-muted fs-13">Ingresa tu correo y te enviaremos las instrucciones</p>
+              </div>
+
+              <div class="alert alert-warning border-0 text-center mb-3 mx-2 fs-13" role="alert">
+                <i class="ri-information-line me-1"></i>
+                Se enviará un enlace de recuperación a tu correo registrado.
+              </div>
+
+              <div class="p-2">
+                <form [formGroup]="passresetForm" (ngSubmit)="onSubmit()">
+                  <div class="mb-4">
+                    <label class="form-label">Correo electrónico</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="ri-mail-line"></i></span>
+                      <input type="email" class="form-control" id="email" placeholder="correo@ejemplo.com"
+                        formControlName="email" [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+                      @if(submitted && f['email'].errors) {
+                        <div class="invalid-feedback">
+                          @if(f['email'].errors['required']) { El correo es requerido }
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <button class="btn btn-primary w-100" type="submit">
+                      <i class="ri-send-plane-line me-2"></i>Enviar enlace de recuperación
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="mt-4 text-center">
+            <p class="mb-0 text-muted fs-13">
+              ¿Recuerdas tu contraseña?
+              <a routerLink="/auth/signin/basic" class="fw-semibold text-primary text-decoration-underline ms-1">Volver al inicio de sesión</a>
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center">
+            <p class="mb-0 text-muted">&copy; 2026 <strong>Encuéntrame.pe - Plaza Norte</strong> &mdash; Desarrollado por <strong>Miguel Licla</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

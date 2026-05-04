@@ -1,0 +1,313 @@
+<div class="container py-4">
+
+  <!-- Clean Sub-Header -->
+  <div class="mb-5">
+    <h2 class="h3 fw-bold mb-1 tracking-tight">Reportar Objeto Perdido</h2>
+    <p class="text-muted small mb-0">Sistema de Custodia Plaza Norte — Registro Oficial</p>
+  </div>
+
+  <!-- Banner publicitario -->
+  <div class="d-flex justify-content-center mb-4">
+    <app-ad-zone slot="1122334455" size="728x90"></app-ad-zone>
+  </div>
+
+  <!-- Progress Steps -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body py-3">
+      <div class="d-flex align-items-center justify-content-center">
+        <ng-container *ngFor="let step of steps; let i = index">
+          <div class="d-flex flex-column align-items-center" style="min-width:72px;">
+            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
+                 style="width:30px;height:30px;font-size:13px;background:#00A1B1;">
+              {{ i + 1 }}
+            </div>
+            <small class="mt-1 fw-semibold" style="font-size:10px;color:#00A1B1;">{{ step.label }}</small>
+          </div>
+          <div *ngIf="i < steps.length - 1"
+               class="border-top flex-grow-1 mb-4"
+               style="border-color:#00A1B1 !important;max-width:80px;"></div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload progress indicator -->
+  <div *ngIf="uploadStep !== 'idle'"
+       class="alert d-flex align-items-center gap-2 mb-4"
+       style="background:#e6f7f9;border:1px solid #bee5eb;color:#00A1B1;">
+    <div class="spinner-border spinner-border-sm flex-shrink-0" style="color:#00A1B1;"></div>
+    <div>
+      <strong>{{ uploadStatusLabel }}</strong>
+      <div style="font-size:11px;margin-top:2px;">
+        <span [class.fw-bold]="uploadStep==='saving'">1. Guardar registro</span>
+        <i class="ri-arrow-right-s-line mx-1"></i>
+        <span [class.fw-bold]="uploadStep==='uploading'">2. Subir foto</span>
+        <i class="ri-arrow-right-s-line mx-1"></i>
+        <span [class.fw-bold]="uploadStep==='updating'">3. Enlazar imagen</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form (ngSubmit)="guardar()" #regForm="ngForm" novalidate>
+    <div class="row g-4">
+
+      <!-- ── COL 1: Objeto ─────────────────────────────────────────────── -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body p-4">
+
+            <div class="d-flex align-items-center gap-2 mb-4">
+              <div class="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
+                   style="width:34px;height:34px;background:#e6f7f9;">
+                <i class="ri-box-3-line" style="color:#00A1B1;"></i>
+              </div>
+              <span class="text-uppercase fw-bold" style="font-size:11px;letter-spacing:.08em;color:#6c757d;">
+                Información del Bien
+              </span>
+            </div>
+
+            <!-- Título -->
+            <div class="mb-3 position-relative">
+              <label class="form-label fw-medium small">¿Qué objeto perdió? *</label>
+              <input type="text" class="form-control" name="titulo"
+                     [(ngModel)]="publicacion.dsc_titulo"
+                     [class.is-invalid]="invalid('dsc_titulo')"
+                     maxlength="200"
+                     placeholder="Ej. Mochila, iPhone, Laptop">
+              <div class="invalid-tooltip">Campo requerido</div>
+            </div>
+
+            <!-- Tipo + Fecha -->
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="form-label fw-medium small">Categoría</label>
+                <select class="form-select" name="tipo" [(ngModel)]="publicacion.id_tipo">
+                  <option [ngValue]="null">Seleccionar...</option>
+                  <option *ngFor="let t of tipos" [ngValue]="t.id_tipo">{{ t.dsc_tipo }}</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-medium small">Fecha pérdida</label>
+                <p-calendar
+                  name="fecha"
+                  [(ngModel)]="publicacion.fch_perdida"
+                  [showIcon]="true"
+                  dateFormat="dd/mm/yy"
+                  [maxDate]="today"
+                  placeholder="DD/MM/AAAA"
+                  appendTo="body"
+                  inputStyleClass="form-control"
+                  styleClass="w-100 p-calendar-inline-custom">
+                </p-calendar>
+              </div>
+            </div>
+
+            <!-- Marca + Color -->
+            <div class="row g-3 mb-3">
+              <div class="col-6 position-relative">
+                <label class="form-label fw-medium small">Marca *</label>
+                <input type="text" class="form-control" name="marca"
+                       [(ngModel)]="publicacion.dsc_marca"
+                       [class.is-invalid]="invalid('dsc_marca')"
+                       maxlength="50"
+                       placeholder="Ej. Apple, Samsung">
+                <div class="invalid-tooltip">Requerido</div>
+              </div>
+              <div class="col-6 position-relative">
+                <label class="form-label fw-medium small">Color *</label>
+                <input type="text" class="form-control" name="color"
+                       [(ngModel)]="publicacion.dsc_color"
+                       [class.is-invalid]="invalid('dsc_color')"
+                       maxlength="50"
+                       placeholder="Ej. Negro, Azul">
+                <div class="invalid-tooltip">Requerido</div>
+              </div>
+            </div>
+
+            <!-- Lugar -->
+            <div class="mb-3">
+              <label class="form-label fw-medium small">Lugar de Extravío</label>
+              <input type="text" class="form-control" name="lugar"
+                     [(ngModel)]="publicacion.dsc_lugar_perdida"
+                     maxlength="200"
+                     placeholder="Referencia del lugar">
+            </div>
+
+            <!-- Descripción -->
+            <div>
+              <label class="form-label fw-medium small">Descripción</label>
+              <textarea class="form-control" rows="2" name="detalle"
+                        [(ngModel)]="publicacion.dsc_detalle_objeto"
+                        maxlength="500"
+                        placeholder="Señas particulares, modelo, estado..."></textarea>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COL 2: Evidencia ──────────────────────────────────────────── -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body p-4 d-flex flex-column">
+
+            <div class="d-flex align-items-center gap-2 mb-4">
+              <div class="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
+                   style="width:34px;height:34px;background:#e6f7f9;">
+                <i class="ri-image-line" style="color:#00A1B1;"></i>
+              </div>
+              <span class="text-uppercase fw-bold" style="font-size:11px;letter-spacing:.08em;color:#6c757d;">
+                Referencia Visual
+              </span>
+            </div>
+
+            <!-- Upload zone -->
+            <div *ngIf="!imagePreview"
+                 class="rounded-3 overflow-hidden position-relative mb-3 flex-grow-1"
+                 style="border:2px dashed #bee5eb;min-height:180px;">
+              <img src="assets/images/no-object.svg" class="w-100 h-100"
+                   style="object-fit:cover;opacity:0.85;">
+              <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-end pb-3"
+                   style="background:rgba(255,255,255,0.45);">
+                <label class="btn btn-sm btn-primary mb-1" for="fileInput" style="cursor:pointer;">
+                  <i class="ri-upload-2-line me-1"></i>Añadir fotografía
+                </label>
+                <input id="fileInput" type="file" class="d-none" accept="image/*"
+                       (change)="onFileSelect($event)">
+                <p class="text-muted mb-0" style="font-size:10px;">
+                  Se subirá al confirmar el registro · JPG / PNG máx. 5 MB
+                </p>
+              </div>
+            </div>
+
+            <!-- Preview -->
+            <div *ngIf="imagePreview" class="position-relative mb-3 flex-grow-1">
+              <img [src]="imagePreview" class="img-fluid rounded-3 w-100"
+                   style="max-height:220px;object-fit:cover;">
+              <div class="position-absolute top-0 start-0 m-2">
+                <span class="badge" style="background:#e6f7f9;color:#00A1B1;font-size:10px;">
+                  <i class="ri-image-line me-1"></i>Lista para subir
+                </span>
+              </div>
+              <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"
+                      (click)="clearImage()" [disabled]="isSaving()">
+                <i class="ri-close-line"></i>
+              </button>
+            </div>
+
+            <div class="alert alert-info py-2 px-3 mb-0 small">
+              <i class="ri-information-line me-1"></i>
+              La foto se subirá automáticamente tras guardar el registro.
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COL 3: Identidad + Submit ─────────────────────────────────── -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body p-4 d-flex flex-column">
+
+            <div class="d-flex align-items-center gap-2 mb-4">
+              <div class="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
+                   style="width:34px;height:34px;background:#e6f7f9;">
+                <i class="ri-shield-user-line" style="color:#00A1B1;"></i>
+              </div>
+              <span class="text-uppercase fw-bold" style="font-size:11px;letter-spacing:.08em;color:#6c757d;">
+                Verificación de Identidad
+              </span>
+            </div>
+
+            <!-- DNI + Teléfono -->
+            <div class="row g-3 mb-3">
+              <div class="col-6 position-relative">
+                <label class="form-label fw-medium small">DNI * (8 dígitos)</label>
+                <input type="text" class="form-control" name="dni"
+                       [(ngModel)]="publicacion.num_documento"
+                       (input)="onlyNumbers('num_documento')"
+                       [class.is-invalid]="invalid('num_documento')"
+                       maxlength="8"
+                       placeholder="8 dígitos">
+                <div class="invalid-tooltip">DNI debe tener 8 dígitos</div>
+              </div>
+              <div class="col-6 position-relative">
+                <label class="form-label fw-medium small">Teléfono * (9 dígitos)</label>
+                <input type="text" class="form-control" name="tel"
+                       [(ngModel)]="publicacion.num_telefono"
+                       (input)="onlyNumbers('num_telefono')"
+                       [class.is-invalid]="invalid('num_telefono')"
+                       maxlength="9"
+                       placeholder="9 dígitos">
+                <div class="invalid-tooltip">Celular debe tener 9 dígitos</div>
+              </div>
+            </div>
+
+            <!-- Nombre -->
+            <div class="mb-3 position-relative">
+              <label class="form-label fw-medium small">Nombres *</label>
+              <input type="text" class="form-control" name="nombre"
+                     [(ngModel)]="publicacion.dsc_nombre"
+                     (input)="onlyLetters('dsc_nombre')"
+                     [class.is-invalid]="invalid('dsc_nombre')"
+                     maxlength="100"
+                     placeholder="Ej. Juan Carlos">
+              <div class="invalid-tooltip">Requerido</div>
+            </div>
+
+            <!-- Apellido Paterno + Materno -->
+            <div class="row g-3 mb-3">
+              <div class="col-6 position-relative">
+                <label class="form-label fw-medium small">Ap. Paterno *</label>
+                <input type="text" class="form-control" name="ap_pat"
+                       [(ngModel)]="publicacion.dsc_apellido_paterno"
+                       (input)="onlyLetters('dsc_apellido_paterno')"
+                       [class.is-invalid]="invalid('dsc_apellido_paterno')"
+                       maxlength="100"
+                       placeholder="Ej. Pérez">
+                <div class="invalid-tooltip">Requerido</div>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-medium small">Ap. Materno</label>
+                <input type="text" class="form-control" name="ap_mat"
+                       [(ngModel)]="publicacion.dsc_apellido_materno"
+                       (input)="onlyLetters('dsc_apellido_materno')"
+                       maxlength="100"
+                       placeholder="Ej. García">
+              </div>
+            </div>
+
+            <!-- Correo -->
+            <div class="mb-3 position-relative">
+              <label class="form-label fw-medium small">Correo Electrónico *</label>
+              <input type="email" class="form-control" name="correo"
+                     [(ngModel)]="publicacion.dsc_correo"
+                     [class.is-invalid]="invalid('dsc_correo')"
+                     maxlength="100"
+                     placeholder="ejemplo@email.com">
+              <div class="invalid-tooltip">Correo inválido o requerido</div>
+            </div>
+
+            <!-- Submit -->
+            <div class="mt-auto">
+              <button type="submit" [disabled]="isSaving()"
+                      class="btn btn-primary w-100 btn-lg">
+                <span *ngIf="isSaving()" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!isSaving()" class="ri-send-plane-line me-2"></i>
+                {{ isSaving() ? uploadStatusLabel : 'Confirmar Registro' }}
+              </button>
+              <p class="text-center mt-3 mb-0 text-muted" style="font-size:11px;">
+                <i class="ri-lock-line me-1"></i>
+                Sus datos son tratados con confidencialidad por el sistema institucional.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+</div>
