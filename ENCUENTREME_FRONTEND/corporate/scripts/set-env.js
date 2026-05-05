@@ -7,35 +7,36 @@ const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-console.log('=== [LLAVES DETECTADAS EN VERCEL] ===');
-console.log('CLOUD_NAME:', cloudName ? '✅ OK' : '❌ NO ENCONTRADA');
+console.log('=== [MODO REEMPLAZO DIRECTO] ===');
 
-if (!cloudName || !apiKey || !apiSecret) {
-  console.error('❌ ERROR CRÍTICO: Faltan llaves de Cloudinary en Vercel.');
-  process.exit(1); 
+if (!cloudName) {
+  console.error('❌ ERROR: CLOUDINARY_CLOUD_NAME no encontrada en Vercel.');
+  process.exit(1);
 }
 
-const globalComponentContent = `
-export const GlobalComponent = {
+// OBJETO REAL QUE VAMOS A INSERTAR
+const replacement = `
     API_URL  : '${apiUrl}/',
     AUTH_API : '${apiUrl}/api/Auth/',
-    headerToken: { 'Authorization': \`Bearer \${localStorage.getItem('cw_token')}\` },
     cloudinary: {
         cloudName: '${cloudName}',
         apiKey: '${apiKey}',
         apiSecret: '${apiSecret}',
         folder: 'encuentreme'
-    }
-};
+    },
 `;
 
-// Ruta absoluta a GlobalComponent
-const targetPath = path.resolve(__dirname, '../src/app/global-component.ts');
+const filePath = path.join(process.cwd(), 'src/app/global-component.ts');
+let content = fs.readFileSync(filePath, 'utf8');
 
-try {
-    fs.writeFileSync(targetPath, globalComponentContent);
-    console.log('✅ GlobalComponent actualizado con éxito en:', targetPath);
-} catch (err) {
-    console.error('❌ Error al escribir GlobalComponent:', err);
+// Buscamos la marca y reemplazamos
+if (content.includes('// DEPLOY_KEYS_HERE')) {
+    content = content.replace('// DEPLOY_KEYS_HERE', replacement);
+    fs.writeFileSync(filePath, content);
+    console.log('✅ CÓDIGO INYECTADO EXITOSAMENTE EN:', filePath);
+} else {
+    console.error('❌ ERROR: No se encontró la marca // DEPLOY_KEYS_HERE en el archivo.');
     process.exit(1);
 }
+
+console.log('=== [FIN REEMPLAZO] ===');
