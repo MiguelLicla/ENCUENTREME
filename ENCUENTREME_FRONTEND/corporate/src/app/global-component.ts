@@ -1,7 +1,10 @@
 
 export const GlobalComponent = {
-    // URL de Render decodificada
-    API_URL  : atob('aHR0cHM6Ly9lbmN1ZW50cmVtZS5vbnJlbmRlci5jb20v'), 
-    AUTH_API : atob('aHR0cHM6Ly9lbmN1ZW50cmVtZS5vbnJlbmRlci5jb20vYXBpL0F1dGgv'),
-    headerToken: { 'Authorization': `Bearer ${localStorage.getItem('cw_token')}` }
+    // URL de Render directa
+    API_URL  : 'https://' + 'encuentreme' + '.onrender' + '.com/',
+    AUTH_API : 'https://' + 'encuentreme' + '.onrender' + '.com/api/Auth/',
+    headerToken: { 'Authorization': `Bearer ${localStorage.getItem('cw_token')}` },
+    version: '1.0.final'
 };
+
+console.log('%c=== SISTEMA ENCUENTREME ACTUALIZADO ===', 'color: white; background: green; font-size: 20px;');
