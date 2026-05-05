@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   defaultauth: 'api',
   apiUrl: '',
-  adsenseClientId: '',
+  adsenseClientId: 'ca-pub-2715739910930216',
   cloudinary: {
     cloudName: '',
     apiKey: '',
