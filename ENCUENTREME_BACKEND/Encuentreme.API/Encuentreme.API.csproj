@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Encuentreme.Logic\Encuentreme.Logic.csproj" />
+    <ProjectReference Include="..\Encuentreme.Framework\Encuentreme.Framework.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />

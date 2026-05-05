@@ -7,4 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Npgsql" Version="8.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Encuentreme.Entities\Encuentreme.Entities.csproj" />
+  </ItemGroup>
 </Project>
