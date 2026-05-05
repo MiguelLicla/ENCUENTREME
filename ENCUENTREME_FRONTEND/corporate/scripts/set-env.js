@@ -2,14 +2,23 @@ const fs = require('fs');
 const path = require('path');
 
 // Cargar variables de entorno de Vercel
-const apiUrl = process.env.API_URL || 'MISSING_API_URL';
-const cloudName = process.env.CLOUDINARY_CLOUD_NAME || 'MISSING_CLOUD_NAME';
-const apiKey = process.env.CLOUDINARY_API_KEY || 'MISSING_API_KEY';
-const apiSecret = process.env.CLOUDINARY_API_SECRET || 'MISSING_API_SECRET';
+const apiUrl = process.env.API_URL;
+const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+const apiKey = process.env.CLOUDINARY_API_KEY;
+const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-console.log('=== [INYECCIÓN CRÍTICA] ===');
-console.log('API_URL:', apiUrl.startsWith('http') ? '✅ OK' : '❌ ERROR');
-console.log('CLOUD_NAME:', cloudName !== 'MISSING_CLOUD_NAME' ? '✅ OK' : '❌ ERROR');
+console.log('=== [LLAVES DETECTADAS EN VERCEL] ===');
+console.log('API_URL:', apiUrl ? apiUrl.substring(0, 10) + '...' : '❌ NO ENCONTRADA');
+console.log('CLOUD_NAME:', cloudName ? cloudName : '❌ NO ENCONTRADA');
+console.log('API_KEY:', apiKey ? apiKey.substring(0, 5) + '...' : '❌ NO ENCONTRADA');
+console.log('API_SECRET:', apiSecret ? 'Recibido (Protegido)' : '❌ NO ENCONTRADA');
+
+// SI FALTA ALGO, DETENEMOS EL BUILD PARA NO SUBIR ALGO QUE NO FUNCIONA
+if (!apiUrl || !cloudName || !apiKey || !apiSecret) {
+  console.error('❌ ERROR CRÍTICO: Una o más variables faltan en el panel de Vercel.');
+  console.error('Por favor, revisa Settings -> Environment Variables.');
+  process.exit(1); 
+}
 
 const envConfigFile = `export const environment = {
   production: true,
@@ -26,18 +35,16 @@ const envConfigFile = `export const environment = {
 };
 `;
 
-// RUTA ABSOLUTA DESDE LA RAÍZ DEL PROYECTO
 const envDir = path.join(process.cwd(), 'src', 'environments');
+if (!fs.existsSync(envDir)) fs.mkdirSync(envDir, { recursive: true });
 
-if (!fs.existsSync(envDir)) {
-    fs.mkdirSync(envDir, { recursive: true });
-}
+// SOBRESCRIBIR ABSOLUTAMENTE TODO
+const files = ['environment.prod.ts', 'environment.ts', 'environment.development.ts'];
 
-const targetProd = path.join(envDir, 'environment.prod.ts');
-const targetDev = path.join(envDir, 'environment.ts');
+files.forEach(file => {
+  const targetPath = path.join(envDir, file);
+  fs.writeFileSync(targetPath, envConfigFile);
+  console.log(`✅ Forzado en: ${file}`);
+});
 
-fs.writeFileSync(targetProd, envConfigFile);
-fs.writeFileSync(targetDev, envConfigFile);
-
-console.log('✅ Archivos sobrescritos en:', envDir);
-console.log('=== [FIN INYECCIÓN] ===');
+console.log('=== [INYECCIÓN COMPLETADA] ===');
