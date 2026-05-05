@@ -2,34 +2,22 @@ const fs = require('fs');
 const path = require('path');
 
 const timestamp = new Date().toLocaleString();
-const apiUrl = process.env.API_URL || 'https://encuentreme.onrender.com';
 const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-console.log('=== [BUILD INJECTION] ===');
-console.log('Hora de Build:', timestamp);
+console.log('=== [LLAVES DETECTADAS] ===');
+console.log('CLOUD:', cloudName || '❌');
 
 if (!cloudName || !apiSecret) {
-    console.error('❌ ERROR: No hay llaves de Cloudinary en Vercel.');
+    console.error('❌ ERROR: Faltan variables en Vercel.');
     process.exit(1);
 }
 
-// 1. ACTUALIZAR GLOBAL COMPONENT (Para la API)
-const globalPath = path.join(process.cwd(), 'src/app/global-component.ts');
-const globalContent = `
-export const GlobalComponent = {
-    API_URL  : '${apiUrl}/',
-    AUTH_API : '${apiUrl}/api/Auth/',
-    headerToken: { 'Authorization': \`Bearer \${localStorage.getItem('cw_token')}\` },
-    buildInfo: '${timestamp}'
-};
-`;
-fs.writeFileSync(globalPath, globalContent);
-console.log('✅ GlobalComponent actualizado.');
+// RUTA RELATIVA SEGURA
+const baseDir = path.resolve(__dirname, '..');
+const servicePath = path.join(baseDir, 'src/app/core/services/cloudinary.service.ts');
 
-// 2. ACTUALIZAR CLOUDINARY SERVICE (Directamente)
-const servicePath = path.join(process.cwd(), 'src/app/core/services/cloudinary.service.ts');
 const serviceContent = `
 import { Injectable } from '@angular/core';
 import { GlobalComponent } from 'src/app/global-component';
@@ -42,9 +30,9 @@ export class CloudinaryService {
   private readonly folder     = 'encuentreme';
 
   constructor() {
-    console.log('--- CLOUDINARY SERVICE INSTANCIADO ---');
-    console.log('Build Time:', GlobalComponent.buildInfo);
-    console.log('Cloud Name cargado:', this.cloudName);
+    console.log('--- CLOUDINARY LIVE ---');
+    console.log('Build Time: ${timestamp}');
+    console.log('Cloud: ${cloudName}');
   }
 
   private async sign(paramsStr: string): Promise<string> {
@@ -56,8 +44,7 @@ export class CloudinaryService {
 
   async upload(file: File): Promise<string> {
     const timestamp = Math.round(Date.now() / 1000);
-    const paramsToSign = \`folder=\${this.folder}&timestamp=\${timestamp}\`;
-    const signature = await this.sign(paramsToSign);
+    const signature = await this.sign(\`folder=\${this.folder}&timestamp=\${timestamp}\`);
     const form = new FormData();
     form.append('file', file);
     form.append('api_key', this.apiKey);
@@ -71,5 +58,6 @@ export class CloudinaryService {
   }
 }
 `;
+
 fs.writeFileSync(servicePath, serviceContent);
-console.log('✅ CloudinaryService inyectado directamente.');
+console.log('✅ Servicio actualizado.');
