@@ -24,6 +24,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 // 2. Configurar Servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<Encuentreme.Framework.Mail.EmailService>();
 
 // 3. Configurar Swagger
 builder.Services.AddSwaggerGen(c =>

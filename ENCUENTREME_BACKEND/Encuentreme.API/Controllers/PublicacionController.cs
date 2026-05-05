@@ -1,5 +1,6 @@
 using Encuentreme.Data.Repositories;
 using Encuentreme.Entities.Entities;
+using Encuentreme.Framework.Mail;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Encuentreme.API.Controllers;
@@ -9,6 +10,12 @@ namespace Encuentreme.API.Controllers;
 public class PublicacionController : ControllerBase
 {
     private readonly PublicacionData _data = new();
+    private readonly EmailService _emailSvc;
+
+    public PublicacionController(EmailService emailSvc)
+    {
+        _emailSvc = emailSvc;
+    }
 
     [HttpGet("listar")]
     public ActionResult Listar(int idPublicacion = 0, int idEstado = 0, int idTipo = 0)
@@ -33,12 +40,21 @@ public class PublicacionController : ControllerBase
     }
 
     [HttpPut("actualizar-imagen")]
-    public ActionResult ActualizarImagen(int idPublicacion, string dscImagen)
+    public async Task<ActionResult> ActualizarImagen(int idPublicacion, string dscImagen)
     {
         try
         {
             var res = _data.ActualizarImagen(idPublicacion, dscImagen);
             if (!res.Success) return BadRequest(new { success = false, message = res.Message });
+
+            // Enviar correo de confirmación
+            var lista = _data.Listar(idPublicacion);
+            if (lista != null && lista.Count > 0)
+            {
+                var pub = lista[0];
+                _ = _emailSvc.SendPublicationEmailAsync(pub); // Fuego y olvido para no retrasar respuesta
+            }
+
             return Ok(new { success = true, message = res.Message });
         }
         catch (Exception ex)
