@@ -2,49 +2,40 @@ const fs = require('fs');
 const path = require('path');
 
 // Cargar variables de entorno de Vercel
-const apiUrl = process.env.API_URL;
+const apiUrl = process.env.API_URL || 'https://encuentreme.onrender.com';
 const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
 console.log('=== [LLAVES DETECTADAS EN VERCEL] ===');
-console.log('API_URL:', apiUrl ? apiUrl.substring(0, 10) + '...' : '❌ NO ENCONTRADA');
-console.log('CLOUD_NAME:', cloudName ? cloudName : '❌ NO ENCONTRADA');
-console.log('API_KEY:', apiKey ? apiKey.substring(0, 5) + '...' : '❌ NO ENCONTRADA');
-console.log('API_SECRET:', apiSecret ? 'Recibido (Protegido)' : '❌ NO ENCONTRADA');
+console.log('CLOUD_NAME:', cloudName ? '✅ OK' : '❌ NO ENCONTRADA');
 
-// SI FALTA ALGO, DETENEMOS EL BUILD PARA NO SUBIR ALGO QUE NO FUNCIONA
-if (!apiUrl || !cloudName || !apiKey || !apiSecret) {
-  console.error('❌ ERROR CRÍTICO: Una o más variables faltan en el panel de Vercel.');
-  console.error('Por favor, revisa Settings -> Environment Variables.');
+if (!cloudName || !apiKey || !apiSecret) {
+  console.error('❌ ERROR CRÍTICO: Faltan llaves de Cloudinary en Vercel.');
   process.exit(1); 
 }
 
-const envConfigFile = `export const environment = {
-  production: true,
-  defaultauth: 'api',
-  apiUrl: '${apiUrl}',
-  adsenseClientId: 'ca-pub-2715739910930216',
-  cloudinary: {
-    cloudName: '${cloudName}',
-    apiKey: '${apiKey}',
-    apiSecret: '${apiSecret}',
-    folder: 'encuentreme'
-  },
-  firebaseConfig: { apiKey: '', authDomain: '', databaseURL: '', projectId: '', storageBucket: '', messagingSenderId: '', appId: '', measurementId: '' }
+const globalComponentContent = `
+export const GlobalComponent = {
+    API_URL  : '${apiUrl}/',
+    AUTH_API : '${apiUrl}/api/Auth/',
+    headerToken: { 'Authorization': \`Bearer \${localStorage.getItem('cw_token')}\` },
+    cloudinary: {
+        cloudName: '${cloudName}',
+        apiKey: '${apiKey}',
+        apiSecret: '${apiSecret}',
+        folder: 'encuentreme'
+    }
 };
 `;
 
-const envDir = path.join(process.cwd(), 'src', 'environments');
-if (!fs.existsSync(envDir)) fs.mkdirSync(envDir, { recursive: true });
+// Ruta absoluta a GlobalComponent
+const targetPath = path.resolve(__dirname, '../src/app/global-component.ts');
 
-// SOBRESCRIBIR ABSOLUTAMENTE TODO
-const files = ['environment.prod.ts', 'environment.ts', 'environment.development.ts'];
-
-files.forEach(file => {
-  const targetPath = path.join(envDir, file);
-  fs.writeFileSync(targetPath, envConfigFile);
-  console.log(`✅ Forzado en: ${file}`);
-});
-
-console.log('=== [INYECCIÓN COMPLETADA] ===');
+try {
+    fs.writeFileSync(targetPath, globalComponentContent);
+    console.log('✅ GlobalComponent actualizado con éxito en:', targetPath);
+} catch (err) {
+    console.error('❌ Error al escribir GlobalComponent:', err);
+    process.exit(1);
+}

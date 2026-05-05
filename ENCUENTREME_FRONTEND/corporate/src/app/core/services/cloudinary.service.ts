@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { GlobalComponent } from 'src/app/global-component';
 
 @Injectable({ providedIn: 'root' })
 export class CloudinaryService {
-  private readonly cloudName  = environment.cloudinary.cloudName;
-  private readonly apiKey     = environment.cloudinary.apiKey;
-  private readonly apiSecret  = environment.cloudinary.apiSecret;
-  private readonly folder     = environment.cloudinary.folder;
+  private readonly cloudName  = GlobalComponent.cloudinary.cloudName;
+  private readonly apiKey     = GlobalComponent.cloudinary.apiKey;
+  private readonly apiSecret  = GlobalComponent.cloudinary.apiSecret;
+  private readonly folder     = GlobalComponent.cloudinary.folder;
 
   /** Genera firma SHA-1 para upload firmado */
   private async sign(paramsStr: string): Promise<string> {
