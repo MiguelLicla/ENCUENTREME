@@ -23,6 +23,14 @@ export class CloudinaryService {
    * Devuelve la secure_url (URL HTTPS pública de la imagen).
    */
   async upload(file: File): Promise<string> {
+    console.log('--- DEBUG CLOUDINARY ---');
+    console.log('Cloud Name:', this.cloudName);
+    console.log('API Key:', this.apiKey ? 'Presente' : 'FALTA');
+    
+    if (!this.cloudName) {
+      console.error('❌ Error: Cloud Name está vacío en CloudinaryService');
+    }
+
     const timestamp = Math.round(Date.now() / 1000);
     const paramsToSign = `folder=${this.folder}&timestamp=${timestamp}`;
     const signature = await this.sign(paramsToSign);
