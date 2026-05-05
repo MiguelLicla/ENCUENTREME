@@ -8,6 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Inicializar DbConfig siguiendo el estándar CarWash
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (!string.IsNullOrEmpty(connectionString))
+{
+    // Limpiar posibles espacios en blanco o saltos de línea inyectados por el entorno
+    connectionString = connectionString.Trim().Replace("\n", "").Replace("\r", "");
+}
 Console.WriteLine($"[DEBUG] ConnectionString loaded length: {connectionString?.Length}");
 DbConfig.Initialize(connectionString!);
 
