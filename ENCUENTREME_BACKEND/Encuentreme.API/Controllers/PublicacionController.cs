@@ -40,19 +40,26 @@ public class PublicacionController : ControllerBase
     }
 
     [HttpPut("actualizar-imagen")]
-    public async Task<ActionResult> ActualizarImagen(int idPublicacion, string dscImagen)
+    public ActionResult ActualizarImagen(int idPublicacion, string dscImagen)
     {
         try
         {
             var res = _data.ActualizarImagen(idPublicacion, dscImagen);
             if (!res.Success) return BadRequest(new { success = false, message = res.Message });
 
-            // Enviar correo de confirmación
+            // Enviar correo de confirmación en segundo plano (No bloqueante)
             var lista = _data.Listar(idPublicacion);
             if (lista != null && lista.Count > 0)
             {
                 var pub = lista[0];
-                await _emailSvc.SendPublicationEmailAsync(pub);
+                // Usamos Task.Run para que el hilo de la solicitud no se quede esperando
+                _ = Task.Run(async () => {
+                    try {
+                        await _emailSvc.SendPublicationEmailAsync(pub);
+                    } catch (Exception ex) {
+                        Console.WriteLine($"[MAIL-BG] Error en segundo plano: {ex.Message}");
+                    }
+                });
             }
 
             return Ok(new { success = true, message = res.Message });
