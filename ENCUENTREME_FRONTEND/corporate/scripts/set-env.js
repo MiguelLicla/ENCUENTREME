@@ -7,15 +7,12 @@ const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-console.log('=== DEBUG ENTORNO VERCEL ===');
-console.log('API_URL:', apiUrl ? 'PRESENTE' : 'AUSENTE (Falta en panel Vercel)');
-console.log('CLOUDINARY_CLOUD_NAME:', cloudName ? 'PRESENTE' : 'AUSENTE');
-console.log('============================');
+console.log('=== VERIFICACIÓN DE ENTORNO ===');
+console.log('API_URL:', apiUrl ? '✅ OK' : '❌ AUSENTE');
+console.log('CLOUDINARY:', cloudName ? '✅ OK' : '❌ AUSENTE');
 
-// Si falta la URL, lanzamos un error para que el build se detenga y nos obligue a revisar Vercel
 if (!apiUrl) {
-  console.error('❌ ERROR CRÍTICO: La variable API_URL no está definida en Vercel.');
-  console.error('Asegúrate de haberla agregado en Settings -> Environment Variables y que esté marcada para "Preview" y "Production".');
+  console.error('❌ ERROR: API_URL no definida. El build fallará.');
   process.exit(1);
 }
 
@@ -25,9 +22,9 @@ const envConfigFile = `export const environment = {
   apiUrl: '${apiUrl}',
   adsenseClientId: 'ca-pub-2715739910930216',
   cloudinary: {
-    cloudName: '${cloudName || 'YOUR_CLOUDINARY_NAME'}',
-    apiKey: '${apiKey || 'YOUR_CLOUDINARY_API_KEY'}',
-    apiSecret: '${apiSecret || 'YOUR_CLOUDINARY_API_SECRET'}',
+    cloudName: '${cloudName || ''}',
+    apiKey: '${apiKey || ''}',
+    apiSecret: '${apiSecret || ''}',
     folder: 'encuentreme'
   },
   firebaseConfig: {
@@ -50,9 +47,5 @@ const paths = [
 
 paths.forEach(targetPath => {
   fs.writeFileSync(targetPath, envConfigFile);
-  console.log(`✅ Generado: ${targetPath}`);
+  console.log(`✅ Archivo generado: ${targetPath}`);
 });
-
-console.log('=== CONTENIDO GENERADO (Verifica que no diga YOUR_...) ===');
-console.log(envConfigFile);
-console.log('========================================================');

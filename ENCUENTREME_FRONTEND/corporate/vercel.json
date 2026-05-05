@@ -1,5 +1,5 @@
 {
-  "outputDirectory": "dist/corporate/browser",
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/api/:path*",
