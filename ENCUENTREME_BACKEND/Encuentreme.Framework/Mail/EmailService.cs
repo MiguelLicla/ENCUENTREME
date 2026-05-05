@@ -83,10 +83,6 @@ public class EmailService
 
                 <p>Nuestro equipo de seguridad revisará esta información. Si alguien entrega un objeto que coincida con tu descripción, te avisaremos de inmediato a través de este correo o al teléfono <span class='accent'>{pub.num_telefono}</span>.</p>
                 
-                <div style='text-align: center; margin-top: 30px;'>
-                    <a href='https://encuentreme-pe.vercel.app/' class='btn' style='color: #ffffff; background-color: #00A1B1; text-decoration: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; display: inline-block;'>Ir al Portal de Búsqueda</a>
-                </div>
-
                 <p style='margin-top: 40px;'>Atentamente,<br><strong>El Equipo de Seguridad de Plaza Norte</strong></p>
             </div>
             <div class='footer'>
