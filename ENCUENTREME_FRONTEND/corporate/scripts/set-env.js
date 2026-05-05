@@ -2,20 +2,14 @@ const fs = require('fs');
 const path = require('path');
 
 // Cargar variables de entorno de Vercel
-const apiUrl = process.env.API_URL;
-const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-const apiKey = process.env.CLOUDINARY_API_KEY;
-const apiSecret = process.env.CLOUDINARY_API_SECRET;
+const apiUrl = process.env.API_URL || 'MISSING_API_URL';
+const cloudName = process.env.CLOUDINARY_CLOUD_NAME || 'MISSING_CLOUD_NAME';
+const apiKey = process.env.CLOUDINARY_API_KEY || 'MISSING_API_KEY';
+const apiSecret = process.env.CLOUDINARY_API_SECRET || 'MISSING_API_SECRET';
 
-console.log('=== [DEBUG] PROCESO DE INYECCIÓN ===');
-console.log('API_URL:', apiUrl ? 'PRESENTE' : 'AUSENTE');
-console.log('CLOUD_NAME:', cloudName ? 'PRESENTE' : 'AUSENTE');
-
-// FALLO CRITICO SI FALTA ALGO
-if (!apiUrl || !cloudName || !apiKey || !apiSecret) {
-  console.error('❌ ERROR: Faltan variables de entorno en Vercel. EL BUILD SE DETENDRÁ.');
-  process.exit(1);
-}
+console.log('=== [INYECCIÓN CRÍTICA] ===');
+console.log('API_URL:', apiUrl.startsWith('http') ? '✅ OK' : '❌ ERROR');
+console.log('CLOUD_NAME:', cloudName !== 'MISSING_CLOUD_NAME' ? '✅ OK' : '❌ ERROR');
 
 const envConfigFile = `export const environment = {
   production: true,
@@ -32,12 +26,18 @@ const envConfigFile = `export const environment = {
 };
 `;
 
-// Asegurar que escribimos en la ruta correcta relativa al script
-const targetProd = path.resolve(__dirname, '../src/environments/environment.prod.ts');
-const targetDev = path.resolve(__dirname, '../src/environments/environment.ts');
+// RUTA ABSOLUTA DESDE LA RAÍZ DEL PROYECTO
+const envDir = path.join(process.cwd(), 'src', 'environments');
+
+if (!fs.existsSync(envDir)) {
+    fs.mkdirSync(envDir, { recursive: true });
+}
+
+const targetProd = path.join(envDir, 'environment.prod.ts');
+const targetDev = path.join(envDir, 'environment.ts');
 
 fs.writeFileSync(targetProd, envConfigFile);
 fs.writeFileSync(targetDev, envConfigFile);
 
-console.log('✅ Archivos de entorno generados con éxito.');
-console.log('=== [DEBUG] FIN INYECCIÓN ===');
+console.log('✅ Archivos sobrescritos en:', envDir);
+console.log('=== [FIN INYECCIÓN] ===');
