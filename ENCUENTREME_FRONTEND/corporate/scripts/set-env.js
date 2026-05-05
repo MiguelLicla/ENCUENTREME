@@ -7,17 +7,13 @@ const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-console.log('=== [BUILD STEP] INYECTANDO VARIABLES ===');
-console.log('Directorio actual:', process.cwd());
+console.log('=== [DEBUG] PROCESO DE INYECCIÓN ===');
+console.log('API_URL:', apiUrl ? 'PRESENTE' : 'AUSENTE');
+console.log('CLOUD_NAME:', cloudName ? 'PRESENTE' : 'AUSENTE');
 
-const envFolder = path.join(__dirname, '../src/environments');
-if (!fs.existsSync(envFolder)) {
-  console.log('Creando carpeta de entornos...');
-  fs.mkdirSync(envFolder, { recursive: true });
-}
-
-if (!apiUrl || !cloudName) {
-  console.error('❌ ERROR: Faltan variables críticas (API_URL o CLOUD_NAME).');
+// FALLO CRITICO SI FALTA ALGO
+if (!apiUrl || !cloudName || !apiKey || !apiSecret) {
+  console.error('❌ ERROR: Faltan variables de entorno en Vercel. EL BUILD SE DETENDRÁ.');
   process.exit(1);
 }
 
@@ -36,14 +32,12 @@ const envConfigFile = `export const environment = {
 };
 `;
 
-const paths = [
-  path.join(envFolder, 'environment.prod.ts'),
-  path.join(envFolder, 'environment.ts')
-];
+// Asegurar que escribimos en la ruta correcta relativa al script
+const targetProd = path.resolve(__dirname, '../src/environments/environment.prod.ts');
+const targetDev = path.resolve(__dirname, '../src/environments/environment.ts');
 
-paths.forEach(targetPath => {
-  fs.writeFileSync(targetPath, envConfigFile);
-  console.log('✅ Archivo inyectado en:', targetPath);
-});
+fs.writeFileSync(targetProd, envConfigFile);
+fs.writeFileSync(targetDev, envConfigFile);
 
-console.log('=== [BUILD STEP] COMPLETADO ===');
+console.log('✅ Archivos de entorno generados con éxito.');
+console.log('=== [DEBUG] FIN INYECCIÓN ===');
