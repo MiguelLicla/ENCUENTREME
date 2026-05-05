@@ -52,7 +52,7 @@ public class PublicacionController : ControllerBase
             if (lista != null && lista.Count > 0)
             {
                 var pub = lista[0];
-                _ = _emailSvc.SendPublicationEmailAsync(pub); // Fuego y olvido para no retrasar respuesta
+                await _emailSvc.SendPublicationEmailAsync(pub);
             }
 
             return Ok(new { success = true, message = res.Message });

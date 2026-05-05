@@ -24,8 +24,15 @@ public class EmailService
             var senderName = _config["Smtp:SenderName"];
             var password = _config["Smtp:Password"];
 
+            Console.WriteLine($"[MAIL] Intentando enviar correo a: {pub.dsc_correo} para el objeto: {pub.dsc_titulo}");
+            Console.WriteLine($"[MAIL] Servidor: {smtpServer}, Puerto: {smtpPort}, Remitente: {senderEmail}");
+
             var toEmail = pub.dsc_correo;
-            if (string.IsNullOrEmpty(toEmail)) return;
+            if (string.IsNullOrEmpty(toEmail))
+            {
+                Console.WriteLine("[MAIL] Error: El correo del destinatario está vacío.");
+                return;
+            }
 
             var body = $@"
 <!DOCTYPE html>
@@ -106,10 +113,13 @@ public class EmailService
             };
 
             await smtpClient.SendMailAsync(mailMessage);
+            Console.WriteLine("[MAIL] Correo enviado exitosamente.");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Silently fail or log in a real app
+            Console.WriteLine($"[MAIL] ERROR CRÍTICO enviando correo: {ex.Message}");
+            if (ex.InnerException != null)
+                Console.WriteLine($"[MAIL] Inner Error: {ex.InnerException.Message}");
         }
     }
 }
